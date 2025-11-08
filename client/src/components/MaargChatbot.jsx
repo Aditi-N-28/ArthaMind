@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { X, Send, Sparkles, Award, HelpCircle, Loader2 } from "lucide-react";
-import { getMaargResponse, detectTopicTag } from "../services/MaargService";
+import { getMaargResponse, detectTopicTag, getQuizForTopic } from "../services/MaargService";
 
 export default function MaargChatbot({ onClose, userData }) {
   const [messages, setMessages] = useState([]);
@@ -17,6 +17,8 @@ export default function MaargChatbot({ onClose, userData }) {
   const [learningHistory, setLearningHistory] = useState({});
   const [showQuizOffer, setShowQuizOffer] = useState(false);
   const [quizTopic, setQuizTopic] = useState("");
+  const [activeQuiz, setActiveQuiz] = useState(null);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -164,10 +166,14 @@ export default function MaargChatbot({ onClose, userData }) {
   const handleAcceptQuiz = async () => {
     setShowQuizOffer(false);
     
+    const quiz = getQuizForTopic(quizTopic);
+    setActiveQuiz(quiz);
+    setSelectedAnswer(null);
+
     const quizMessage = {
       id: Date.now().toString(),
       role: "assistant",
-      content: `Great! Let's test your knowledge on ${quizTopic}. Here's a quick quiz:\n\n1. What is the primary benefit of ${quizTopic}?\n2. When is the best time to consider ${quizTopic}?\n3. What are the key factors to evaluate?\n\nTake your time and answer these questions!`,
+      content: `Great! Let's test your knowledge on ${quizTopic}. Here's your quiz question:`,
       timestamp: Date.now(),
     };
 
@@ -195,23 +201,47 @@ export default function MaargChatbot({ onClose, userData }) {
     toast.info("Quiz declined. You can ask for one anytime!");
   };
 
-  const handleCompleteQuiz = async () => {
-    await awardXP(20);
-    await awardCoins(10);
-    
-    toast.success("🎉 Great job! You earned 20 XP and 10 Coins!", {
-      position: "top-center",
-      autoClose: 5000,
-    });
+  const handleSubmitQuizAnswer = async (answerIndex) => {
+    const isCorrect = answerIndex === activeQuiz.correctAnswer;
+    setSelectedAnswer(answerIndex);
 
-    const congratsMessage = {
+    const userAnswerMessage = {
       id: Date.now().toString(),
-      role: "assistant",
-      content: `🎉 Excellent work! You've completed the ${quizTopic} quiz and earned:\n\n✨ +20 XP\n🪙 +10 Coins\n\nKeep learning and growing your financial knowledge!`,
+      role: "user",
+      content: activeQuiz.options[answerIndex],
       timestamp: Date.now(),
     };
 
-    setMessages((prev) => [...prev, congratsMessage]);
+    setMessages((prev) => [...prev, userAnswerMessage]);
+
+    if (isCorrect) {
+      await awardXP(20);
+      await awardCoins(10);
+      
+      toast.success("🎉 Correct! You earned 20 XP and 10 Coins!", {
+        position: "top-center",
+        autoClose: 5000,
+      });
+
+      const congratsMessage = {
+        id: Date.now().toString() + 1,
+        role: "assistant",
+        content: `🎉 Excellent work! That's the correct answer!\n\nYou've earned:\n✨ +20 XP\n🪙 +10 Coins\n\nKeep learning and growing your financial knowledge!`,
+        timestamp: Date.now() + 1,
+      };
+
+      setMessages((prev) => [...prev, congratsMessage]);
+    } else {
+      const feedbackMessage = {
+        id: Date.now().toString() + 1,
+        role: "assistant",
+        content: `Not quite right, but great effort! The correct answer is: ${activeQuiz.options[activeQuiz.correctAnswer]}\n\n${activeQuiz.explanation}\n\nKeep learning! You still earned 5 XP for trying.`,
+        timestamp: Date.now() + 1,
+      };
+
+      setMessages((prev) => [...prev, feedbackMessage]);
+      await awardXP(5);
+    }
 
     try {
       const updatedHistory = {
@@ -228,6 +258,9 @@ export default function MaargChatbot({ onClose, userData }) {
     } catch (error) {
       console.error("Error updating quiz completion:", error);
     }
+
+    setActiveQuiz(null);
+    setSelectedAnswer(null);
   };
 
   return (
@@ -309,9 +342,37 @@ export default function MaargChatbot({ onClose, userData }) {
                         <Button size="sm" onClick={handleAcceptQuiz} data-testid="button-accept-quiz">
                           Yes, let's do it!
                         </Button>
-                        <Button size="sm" variant="outline" onClick={handleDeclineQuiz}>
+                        <Button size="sm" variant="outline" onClick={handleDeclineQuiz} data-testid="button-maybe-later">
                           Maybe later
                         </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
+
+              {activeQuiz && (
+                <div className="flex justify-center">
+                  <Card className="max-w-md border-primary">
+                    <CardContent className="pt-6">
+                      <div className="mb-4">
+                        <Badge variant="default" className="mb-3">Quiz Time!</Badge>
+                        <h4 className="font-semibold mb-3">{activeQuiz.question}</h4>
+                      </div>
+                      <div className="space-y-2">
+                        {activeQuiz.options.map((option, index) => (
+                          <Button
+                            key={index}
+                            variant={selectedAnswer === index ? "default" : "outline"}
+                            className="w-full justify-start text-left h-auto py-3 px-4"
+                            onClick={() => handleSubmitQuizAnswer(index)}
+                            disabled={selectedAnswer !== null}
+                            data-testid={`button-quiz-option-${index}`}
+                          >
+                            <span className="font-semibold mr-2">{String.fromCharCode(65 + index)}.</span>
+                            {option}
+                          </Button>
+                        ))}
                       </div>
                     </CardContent>
                   </Card>

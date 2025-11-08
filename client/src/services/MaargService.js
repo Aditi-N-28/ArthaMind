@@ -390,3 +390,144 @@ For example:
 - "Explain SIP and which one suits me"
 - "How can I save on taxes?"`;
 }
+
+export function getQuizForTopic(topic) {
+  const quizzes = {
+    sip: [
+      {
+        question: "What is the primary benefit of investing through a Systematic Investment Plan (SIP)?",
+        options: [
+          "Guaranteed returns on investment",
+          "Rupee cost averaging and disciplined investing",
+          "No market risk involved",
+          "Instant withdrawal without penalties"
+        ],
+        correctAnswer: 1,
+        explanation: "SIP helps with rupee cost averaging, which means you buy more units when prices are low and fewer when prices are high. This disciplined approach reduces the impact of market volatility."
+      },
+      {
+        question: "What is the recommended minimum investment period for a SIP in equity mutual funds?",
+        options: [
+          "6 months to 1 year",
+          "1-2 years",
+          "3-5 years or more",
+          "Less than 6 months"
+        ],
+        correctAnswer: 2,
+        explanation: "For equity mutual funds, a minimum investment horizon of 3-5 years is recommended to ride out market volatility and benefit from compounding."
+      }
+    ],
+    loan: [
+      {
+        question: "Which debt repayment strategy focuses on paying off loans with the highest interest rates first?",
+        options: [
+          "Snowball method",
+          "Avalanche method",
+          "Consolidation method",
+          "Minimum payment method"
+        ],
+        correctAnswer: 1,
+        explanation: "The Avalanche method prioritizes paying off debts with the highest interest rates first, which saves the most money on interest over time."
+      },
+      {
+        question: "What is a healthy debt-to-income ratio to maintain?",
+        options: [
+          "More than 50%",
+          "Between 40-50%",
+          "Below 36%",
+          "Above 60%"
+        ],
+        correctAnswer: 2,
+        explanation: "A debt-to-income ratio below 36% is considered healthy, meaning your total monthly debt payments should not exceed 36% of your gross monthly income."
+      }
+    ],
+    tax: [
+      {
+        question: "What is the maximum deduction allowed under Section 80C of the Income Tax Act?",
+        options: [
+          "₹1,00,000",
+          "₹1,50,000",
+          "₹2,00,000",
+          "₹50,000"
+        ],
+        correctAnswer: 1,
+        explanation: "Section 80C allows a maximum deduction of ₹1,50,000 per financial year for investments in specified instruments like PPF, ELSS, NSC, etc."
+      }
+    ],
+    investment: [
+      {
+        question: "What is diversification in investment?",
+        options: [
+          "Investing all money in one stock",
+          "Spreading investments across different asset classes",
+          "Only investing in fixed deposits",
+          "Investing only in real estate"
+        ],
+        correctAnswer: 1,
+        explanation: "Diversification means spreading investments across different asset classes (stocks, bonds, gold, real estate) to reduce risk and optimize returns."
+      }
+    ],
+    insurance: [
+      {
+        question: "What is the recommended life insurance coverage amount?",
+        options: [
+          "Equal to annual income",
+          "2-3 times annual income",
+          "10-15 times annual income",
+          "Equal to savings"
+        ],
+        correctAnswer: 2,
+        explanation: "Financial experts recommend life insurance coverage of 10-15 times your annual income to ensure your family's financial security."
+      }
+    ],
+    savings: [
+      {
+        question: "What should be the ideal size of an emergency fund?",
+        options: [
+          "1 month's expenses",
+          "2-3 months' expenses",
+          "6-12 months' expenses",
+          "1 year's salary"
+        ],
+        correctAnswer: 2,
+        explanation: "An emergency fund should cover 6-12 months of living expenses to handle unexpected situations like job loss or medical emergencies."
+      }
+    ],
+    retirement: [
+      {
+        question: "At what age can you start withdrawing from NPS (National Pension System)?",
+        options: [
+          "50 years",
+          "55 years",
+          "60 years",
+          "65 years"
+        ],
+        correctAnswer: 2,
+        explanation: "You can start withdrawing from NPS at age 60. At least 40% of the corpus must be used to purchase an annuity."
+      }
+    ],
+    budget: [
+      {
+        question: "What is the 50/30/20 budgeting rule?",
+        options: [
+          "50% savings, 30% needs, 20% wants",
+          "50% needs, 30% wants, 20% savings",
+          "50% wants, 30% savings, 20% needs",
+          "50% investments, 30% expenses, 20% emergency fund"
+        ],
+        correctAnswer: 1,
+        explanation: "The 50/30/20 rule suggests allocating 50% of income to needs, 30% to wants, and 20% to savings and debt repayment."
+      }
+    ]
+  };
+
+  const topicQuizzes = quizzes[topic] || quizzes.investment;
+  const randomIndex = Math.floor(Math.random() * topicQuizzes.length);
+  return topicQuizzes[randomIndex];
+}
+
+export default {
+  getMaargResponse,
+  detectTopicTag,
+  getQuizForTopic,
+};
