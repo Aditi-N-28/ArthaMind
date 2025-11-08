@@ -6,8 +6,21 @@ import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, DollarSign, Home, Heart, CreditCard, Wallet } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Loader2,
+  DollarSign,
+  Home,
+  Heart,
+  CreditCard,
+  Wallet,
+} from "lucide-react";
 
 export default function FinancialCredentials() {
   const [, setLocation] = useLocation();
@@ -85,7 +98,9 @@ export default function FinancialCredentials() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const remaining = (parseFloat(formData.goalAmount) || 0) - (parseFloat(formData.currentSavings) || 0);
+  const remaining =
+    (parseFloat(formData.goalAmount) || 0) -
+    (parseFloat(formData.currentSavings) || 0);
 
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1f0036] via-[#2a004f] to-[#ff6b6b] p-4 overflow-hidden">
@@ -94,16 +109,30 @@ export default function FinancialCredentials() {
       <div className="absolute w-48 h-48 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full blur-2xl opacity-40 right-[-60px] top-[-60px]"></div>
       <div className="absolute w-24 h-24 bg-purple-700 rounded-full blur-xl opacity-30 right-10 bottom-10"></div>
 
-      <Card className="w-full max-w-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl rounded-xl z-10">
+      {/* 🎯 Change: max-w-3xl to max-w-md to match the Login Card width */}
+      <Card className="w-full max-w-md bg-white/10 backdrop-blur-md border border-white/20 shadow-xl rounded-xl z-10">
         <CardHeader className="space-y-1 text-center text-white">
-          <CardTitle className="text-3xl font-bold">Financial Credentials</CardTitle>
+          {/* 🎯 New: Added the Logo/Icon from the Login Page */}
+          <div className="flex justify-center mb-4">
+            <div className="h-12 w-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-md">
+              <span className="text-2xl font-bold text-white">A</span>
+            </div>
+          </div>
+          <CardTitle className="text-3xl font-bold">
+            Financial Credentials
+          </CardTitle>
           <CardDescription className="text-base text-white/70">
-            Help us understand your financial situation to provide better insights
+            Help us understand your financial situation to provide better
+            insights
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {" "}
+            {/* 🎯 Change: space-y-8 reduced to space-y-4 for tighter login-like spacing */}
+            <div className="space-y-2">
+              {" "}
+              {/* 🎯 Change: space-y-4 reduced to space-y-2 */}
               <Label className="text-lg font-semibold flex items-center gap-2 text-white">
                 <DollarSign className="h-5 w-5 text-pink-400" />
                 Monthly Income
@@ -121,10 +150,14 @@ export default function FinancialCredentials() {
                 className="h-11 bg-white/10 text-white placeholder-white/80 border border-white/30"
               />
             </div>
-
-            <div className="space-y-4">
-              <Label className="text-lg font-semibold text-white">Monthly Expenses</Label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              {" "}
+              {/* 🎯 Change: space-y-4 reduced to space-y-2 */}
+              <Label className="text-lg font-semibold text-white">
+                Monthly Expenses
+              </Label>
+              {/* 🎯 Change: Changed from grid-cols-1 md:grid-cols-2 to grid-cols-1 to fit max-w-md */}
+              <div className="grid grid-cols-1 gap-4">
                 <div className="space-y-2">
                   <Label className="flex items-center gap-2 text-white/80">
                     <Wallet className="h-4 w-4" />
@@ -195,10 +228,14 @@ export default function FinancialCredentials() {
                 </div>
               </div>
             </div>
-
-            <div className="space-y-4">
-              <Label className="text-lg font-semibold text-white">Savings Goals</Label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              {" "}
+              {/* 🎯 Change: space-y-4 reduced to space-y-2 */}
+              <Label className="text-lg font-semibold text-white">
+                Savings Goals
+              </Label>
+              {/* 🎯 Change: Changed from grid-cols-1 md:grid-cols-2 to grid-cols-1 to fit max-w-md */}
+              <div className="grid grid-cols-1 gap-4">
                 <div className="space-y-2">
                   <Label className="text-white/80">Goal Amount</Label>
                   <Input
@@ -214,7 +251,9 @@ export default function FinancialCredentials() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-white/80">Current Monthly Savings</Label>
+                  <Label className="text-white/80">
+                    Current Monthly Savings
+                  </Label>
                   <Input
                     name="currentSavings"
                     type="number"
@@ -231,12 +270,14 @@ export default function FinancialCredentials() {
               {formData.goalAmount && formData.currentSavings && (
                 <div className="p-4 bg-white/10 rounded-lg">
                   <p className="text-sm font-medium text-white/90">
-                    Remaining to save: <span className="text-xl font-mono font-bold text-pink-400">₹{remaining.toFixed(2)}</span>
+                    Remaining to save:{" "}
+                    <span className="text-xl font-mono font-bold text-pink-400">
+                      ₹{remaining.toFixed(2)}
+                    </span>
                   </p>
                 </div>
               )}
             </div>
-
             <Button
               type="submit"
               className="w-full h-11 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:from-pink-500 hover:to-orange-400 transition-all"

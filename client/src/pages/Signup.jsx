@@ -7,7 +7,13 @@ import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 
 export default function Signup() {
@@ -22,7 +28,7 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match");
       return;
@@ -39,7 +45,7 @@ export default function Signup() {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         formData.email,
-        formData.password
+        formData.password,
       );
 
       await setDoc(doc(db, "users", userCredential.user.uid), {
@@ -74,23 +80,35 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1 text-center">
+    // 1. Applied shared background and glowing circles
+    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1f0036] via-[#2a004f] to-[#ff6b6b] p-4 overflow-hidden">
+      {/* 🔮 Glowing Background Circles */}
+      <div className="absolute w-72 h-72 bg-gradient-to-br from-pink-500 to-orange-400 rounded-full blur-3xl opacity-30 left-[-100px] bottom-[-100px]"></div>
+      <div className="absolute w-48 h-48 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full blur-2xl opacity-40 right-[-60px] top-[-60px]"></div>
+      <div className="absolute w-24 h-24 bg-purple-700 rounded-full blur-xl opacity-30 right-10 bottom-10"></div>
+
+      {/* 2. Applied shared card style (glassmorphism) */}
+      <Card className="w-full max-w-md bg-white/10 backdrop-blur-md border border-white/20 shadow-xl rounded-xl z-10">
+        <CardHeader className="space-y-1 text-center text-white">
           <div className="flex justify-center mb-4">
-            <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+            {/* 3. Applied shared logo gradient style */}
+            <div className="h-12 w-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-md">
               <span className="text-2xl font-bold text-white">A</span>
             </div>
           </div>
           <CardTitle className="text-3xl font-bold">Join ArthaMind</CardTitle>
-          <CardDescription className="text-base">
+          {/* 4. Applied shared CardDescription style */}
+          <CardDescription className="text-base text-white/70">
             Start your journey to financial intelligence
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="fullName">Full Name</Label>
+              {/* 5. Applied white label text */}
+              <Label htmlFor="fullName" className="text-white">
+                Full Name
+              </Label>
               <Input
                 id="fullName"
                 name="fullName"
@@ -100,11 +118,15 @@ export default function Signup() {
                 onChange={handleChange}
                 required
                 data-testid="input-fullname"
-                className="h-11"
+                // 6. Applied shared input style
+                className="h-11 bg-white/10 text-white placeholder-white/80 border border-white/30"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              {/* 5. Applied white label text */}
+              <Label htmlFor="email" className="text-white">
+                Email
+              </Label>
               <Input
                 id="email"
                 name="email"
@@ -114,11 +136,15 @@ export default function Signup() {
                 onChange={handleChange}
                 required
                 data-testid="input-email"
-                className="h-11"
+                // 6. Applied shared input style
+                className="h-11 bg-white/10 text-white placeholder-white/80 border border-white/30"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              {/* 5. Applied white label text */}
+              <Label htmlFor="password" className="text-white">
+                Password
+              </Label>
               <Input
                 id="password"
                 name="password"
@@ -128,11 +154,15 @@ export default function Signup() {
                 onChange={handleChange}
                 required
                 data-testid="input-password"
-                className="h-11"
+                // 6. Applied shared input style
+                className="h-11 bg-white/10 text-white placeholder-white/80 border border-white/30"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              {/* 5. Applied white label text */}
+              <Label htmlFor="confirmPassword" className="text-white">
+                Confirm Password
+              </Label>
               <Input
                 id="confirmPassword"
                 name="confirmPassword"
@@ -142,12 +172,14 @@ export default function Signup() {
                 onChange={handleChange}
                 required
                 data-testid="input-confirm-password"
-                className="h-11"
+                // 6. Applied shared input style
+                className="h-11 bg-white/10 text-white placeholder-white/80 border border-white/30"
               />
             </div>
             <Button
               type="submit"
-              className="w-full h-11"
+              // 7. Applied shared button style
+              className="w-full h-11 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:from-pink-500 hover:to-orange-400 transition-all"
               disabled={loading}
               data-testid="button-signup"
             >
@@ -161,9 +193,15 @@ export default function Signup() {
               )}
             </Button>
           </form>
-          <div className="mt-6 text-center text-sm">
-            <span className="text-muted-foreground">Already have an account? </span>
-            <Link href="/login" className="text-primary hover:underline font-medium" data-testid="link-login">
+          {/* 8. Applied shared footer text style */}
+          <div className="mt-6 text-center text-sm text-white/70">
+            <span>Already have an account? </span>
+            {/* 9. Applied shared link style */}
+            <Link
+              href="/login"
+              className="text-pink-400 hover:underline font-medium"
+              data-testid="link-login"
+            >
               Sign in
             </Link>
           </div>
