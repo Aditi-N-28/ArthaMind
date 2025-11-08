@@ -1,0 +1,184 @@
+Now generate the full ArthaMind app with all pages, components, and logic exactly as defined below. IMPORTANT: Do not recreate the project. Only ADD files into the existing Vite React project.
+
+[ArthaMind (Premium Feature Build)
+You are building a full-stack web application called ArthaMind — an intelligent, gamified financial guide powered by AI.
+The integrated chatbot assistant is named Maarg.
+The app should use:
+React (Vite or Create React App) for the front-end
+Tailwind CSS for styling
+Firebase Auth (preferred) or Clerk/Auth0 for authentication
+Firestore (Firebase) for persistent storage (user profiles, XP, coins, expenses, savings, and chat logs)
+Gemini API placeholder for Maarg’s AI logic (use mock responses for now)
+The goal is to generate a fully working, structured webapp with the following features and layout:
+
+Authentication (Login & Signup)
+Pages: /signup and /login
+Allow signup via email or phone number, password, and full name.
+Use Firebase Authentication or Clerk/Auth0 (third-party auth).
+Password generation & secure storage handled by the chosen auth provider.
+Once authenticated, direct users to the Personal Credentials setup page.
+
+Personal Credentials Page
+Route: /personal
+Greet the user with:
+"Hi [UserName], welcome to ArthaMind. Kindly fill your personal credentials."
+Collect:
+Date of Birth (DOB) → auto-generate and display Age.
+Gender (dropdown).
+On submission → save to Firestore under users/{uid}/personalData.
+Redirect to Financial Credentials page.
+
+Financial Credentials Page
+Route: /financial
+Collect:
+Monthly Salary (numeric input).
+Key Expense breakdowns (number inputs or sliders):
+Personal
+Medical
+Housing
+Loan/Debt Payments
+Monthly Savings:
+Goal Amount (maximum/minimum enforced; if exceeded, show a warning toast).
+Current Monthly Savings (saved so far).
+Remaining to Save = Goal Amount − Current.
+Save all data to Firestore (users/{uid}/financialData).
+
+Auto-generate charts on dashboard:
+Pie chart: Expenses distribution (Chart.js or Recharts).
+Horizontal bar chart: Savings progress (goal vs. current).
+Redirect to Dashboard.
+
+Dashboard Page
+Route: /dashboard
+The dashboard will have a split layout:
+Left Sidebar (narrow):
+User Profile Section:
+Name, Gender, Age
+Salary (monthly)
+Key expenses overview (no chart)
+Gamification Section:
+XP level (Level 1–10)
+Coin balance
+Right Main Panel (wide):
+Pie Chart: Expense breakdown (personal, medical, housing, loan/debt).
+Horizontal Bar Chart: Goal amount vs. current savings (auto-updated).
+Financial News Section:
+Integrate free financial news API (or mock JSON feed).
+Auto-refresh daily tips/updates.
+Bottom Right Corner: Floating button — “Chat with Maarg ”
+Clicking it opens a chatbot popup modal.
+
+Maarg Chatbot (Premium Feature)
+Purpose: An intelligent financial AI assistant integrated into ArthaMind.
+The chatbot will be an expandable pop-up modal or side window component with the following capabilities:
+
+A. Core AI Engine (Gemini & Context)
+Function: Answer questions and provide expert advice.
+Mechanism:
+Takes the user’s question and combines it with their personal and financial context (salary, expenses, savings).
+Sends this combined context to the Gemini API (use mock endpoint for now).
+Example queries:
+“Should I take a loan or save first?”
+“Explain SIP and which one suits me.”
+“Suggest an Avalanche vs. Snowball repayment plan for my debts.”
+
+B. Adaptive Learning Engine (Quizzes & Tracking)
+Tracks the topic tag of each question asked (like “SIP,” “loan,” “tax”).
+If the same topic appears 2+ times, Maarg sends a proactive message:
+"I notice you’ve been asking about SIPs frequently. Would you like me to generate a short quiz to strengthen your understanding?"
+Stores tags in Firestore under users/{uid}/learningHistory.
+
+C. Gamification Engine (XP & Coins)
+Each meaningful interaction updates counters in Firestore:
+coins +10 when user finishes a quiz or completes a milestone.
+xp +5 for every valid financial query.
+Display XP and Coins on the Dashboard’s left panel.
+Trigger toast notifications like:
+" Great job, you just earned 5 XP and 10 Coins!"
+
+Autonomous Financial Goal Planner (via Maarg)
+This is Maarg’s premium conversational feature replacing traditional input forms.
+
+It uses the user’s stored context (salary, savings, expenses, goals) to simulate an AI-powered planner.
+
+When user says something like:
+
+“I want to save ₹5,00,000 in 3 years for a car,”
+Maarg responds with:
+
+Required monthly SIP or savings target.
+
+Smart Fund Mapping (Equity/Debt based on timeline).
+
+Feasibility message (e.g., “Your current savings rate meets 72% of the target.”).
+
+System Instruction for Gemini API Call (as required output):
+
+You are Maarg, an expert AI financial mentor integrated into ArthaMind.
+Your goal is to provide actionable, personalized financial guidance for the user.
+Always use the user’s hidden context (salary, savings, expenses, goals) to generate intelligent advice.
+Behave as the user’s autonomous financial planner.
+1. When the user sets a new goal, calculate monthly savings needed (SIP).
+2. When asked about loans, explain eligibility, repayment strategy (Avalanche/Snowball).
+3. When asked for investment advice, suggest risk-matched options based on time horizon.
+4. When noticing repeated topics, recommend a learning quiz (Adaptive Learning Engine).
+5. Reward user actions by triggering XP/coin increments in the Gamification Engine.
+Keep answers friendly, concise, and India-specific where relevant.
+
+UI & Theming
+
+Use Tailwind CSS for sleek financial aesthetic (gradient blues & greens).
+
+Dashboard layout must be responsive and clean (grid/flex).
+
+Add ArthaMind logo top-left and subtle tagline:
+“Your path to smarter money decisions, guided by Maarg.”
+
+Technical Requirements
+
+Environment: Replit React environment.
+
+Dependencies: firebase, chart.js, react-chartjs-2, react-toastify, axios, tailwindcss.
+
+Use Firestore collections:
+
+users → personalData, financialData, xp, coins
+
+learningHistory
+
+chatHistory
+
+Keep Gemini integration modular in MaargService.js (mock API placeholder).
+
+Provide comments in code for each major section.
+
+Include a “Premium Feature” badge or lock icon next to Maarg in UI.
+
+Deliverables
+
+Generate a complete React + Tailwind + Firebase project with:
+
+Functional signup/login
+
+Personal + Financial credential input
+
+Dashboard with profile + XP + coins + charts + news section
+
+Floating AI chatbot (“Chat with Maarg ”) modal
+
+Integrated logic scaffolds for Gemini API, XP/coins, and quiz detection.
+
+The output should include:
+
+Full React component structure (each page/component in its own file).
+
+Sample Firestore data schema.
+
+Mock Gemini API service file.
+
+Tailwind layout and dashboard styling.
+
+The final code must be ready to run in Replit as a self-contained React app, with Firebase config placeholders for easy setup.
+
+
+Now generate each React component file in the project structure you just defined.] 
