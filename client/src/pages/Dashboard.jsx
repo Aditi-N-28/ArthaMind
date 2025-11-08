@@ -87,10 +87,46 @@ export default function Dashboard() {
         <aside className="w-full lg:w-80 p-6 overflow-y-auto bg-white/10 backdrop-blur-md border border-white/20 shadow-xl rounded-none lg:rounded-r-xl">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              {/* Logo matching the login/onboarding pages */}
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-md">
-                <span className="text-lg font-bold text-white">A</span>
-              </div>
+              {/* Custom ArthaMind Logo - Financial Intelligence & Growth */}
+              <svg 
+                className="h-10 w-10 text-primary" 
+                viewBox="0 0 100 100" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                {/* Shield Base - Security & Structure */}
+                <path 
+                  d="M50 10 L80 25 L80 55 Q80 75 50 90 Q20 75 20 55 L20 25 Z" 
+                  fill="currentColor" 
+                  opacity="0.15"
+                />
+                <path 
+                  d="M50 10 L80 25 L80 55 Q80 75 50 90 Q20 75 20 55 L20 25 Z" 
+                  stroke="currentColor" 
+                  strokeWidth="2.5" 
+                  fill="none"
+                />
+                
+                {/* Grid Lines - Data Structure */}
+                <line x1="35" y1="35" x2="35" y2="70" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
+                <line x1="50" y1="35" x2="50" y2="70" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
+                <line x1="65" y1="35" x2="65" y2="70" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
+                
+                {/* Ascending Data Line - Growth & Intelligence */}
+                <polyline 
+                  points="28,65 35,55 42,58 50,45 58,48 65,35 72,38" 
+                  stroke="currentColor" 
+                  strokeWidth="3" 
+                  fill="none" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                />
+                
+                {/* Data Points - Key Insights */}
+                <circle cx="35" cy="55" r="3" fill="currentColor" />
+                <circle cx="50" cy="45" r="3" fill="currentColor" />
+                <circle cx="65" cy="35" r="3" fill="currentColor" />
+              </svg>
               <div>
                 <h1 className="text-lg font-bold">ArthaMind</h1>
                 <p className="text-xs text-white/70">Financial Intelligence</p>
