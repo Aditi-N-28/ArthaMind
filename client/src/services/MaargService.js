@@ -1,6 +1,16 @@
 // Maarg AI Service - Mock implementation for Gemini API integration
 // This service will be replaced with actual Gemini API calls in production
 
+const hasGeminiKey = false; // Set to true when Gemini API key is added
+let model = null;
+
+// Uncomment below when @google/generative-ai is installed and API key is set
+// import { GoogleGenerativeAI } from "@google/generative-ai";
+// if (import.meta.env.VITE_GEMINI_API_KEY) {
+//   const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+//   model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+// }
+
 const financialTopics = {
   sip: ["sip", "systematic investment", "mutual fund"],
   loan: ["loan", "debt", "borrow", "repayment", "avalanche", "snowball"],
@@ -14,22 +24,41 @@ const financialTopics = {
 
 export function detectTopicTag(question) {
   const lowerQuestion = question.toLowerCase();
-  
+
   for (const [topic, keywords] of Object.entries(financialTopics)) {
-    if (keywords.some(keyword => lowerQuestion.includes(keyword))) {
+    if (keywords.some((keyword) => lowerQuestion.includes(keyword))) {
       return topic;
     }
   }
-  
+
   return null;
 }
 
 export async function getMaargResponse(question, userData) {
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  // Auto-switch: real Gemini if API key exists, else mock
+  if (hasGeminiKey && model) {
+    try {
+      const prompt = `
+  You are Maarg, an AI financial mentor inside ArthaMind.
+  Use the user's financial context to generate friendly, India-specific advice.
+
+  User context:
+  ${JSON.stringify(userData, null, 2)}
+
+  User question:
+  ${question}
+        `;
+      const result = await model.generateContent(prompt);
+      const aiReply = result.response.text();
+      return aiReply;
+    } catch (err) {
+      console.error("Gemini error → fallback to mock:", err);
+    }
+  }
 
   const context = buildUserContext(userData);
   const topicTag = detectTopicTag(question);
-  
+
   const mockResponses = {
     sip: generateSIPResponse(question, context),
     loan: generateLoanResponse(question, context),
@@ -50,20 +79,25 @@ export async function getMaargResponse(question, userData) {
 
 function buildUserContext(userData) {
   const { personalData, financialData } = userData;
-  
+
   return {
     age: personalData?.age || 0,
     salary: financialData?.monthlySalary || 0,
     expenses: financialData?.expenses || {},
     savings: financialData?.savings || {},
-    totalExpenses: Object.values(financialData?.expenses || {}).reduce((a, b) => a + b, 0),
-    disposableIncome: (financialData?.monthlySalary || 0) - Object.values(financialData?.expenses || {}).reduce((a, b) => a + b, 0),
+    totalExpenses: Object.values(financialData?.expenses || {}).reduce(
+      (a, b) => a + b,
+      0,
+    ),
+    disposableIncome:
+      (financialData?.monthlySalary || 0) -
+      Object.values(financialData?.expenses || {}).reduce((a, b) => a + b, 0),
   };
 }
 
 function generateSIPResponse(question, context) {
   const monthlySavingCapacity = context.disposableIncome;
-  
+
   return `**Understanding SIP (Systematic Investment Plan)**
 
 A SIP is a disciplined way to invest in mutual funds by contributing a fixed amount regularly (monthly/quarterly).
@@ -78,8 +112,8 @@ A SIP is a disciplined way to invest in mutual funds by contributing a fixed amo
 3. **Disciplined Investing**: Automated monthly investments
 
 **Recommended Allocation (based on age ${context.age}):**
-- Equity funds: ${context.age < 35 ? '70%' : context.age < 50 ? '50%' : '30%'}
-- Debt funds: ${context.age < 35 ? '30%' : context.age < 50 ? '50%' : '70%'}
+- Equity funds: ${context.age < 35 ? "70%" : context.age < 50 ? "50%" : "30%"}
+- Debt funds: ${context.age < 35 ? "30%" : context.age < 50 ? "50%" : "70%"}
 
 Would you like me to suggest specific fund categories based on your risk profile?`;
 }
@@ -87,7 +121,7 @@ Would you like me to suggest specific fund categories based on your risk profile
 function generateLoanResponse(question, context) {
   const totalDebt = context.expenses.loanDebt || 0;
   const monthlyIncome = context.salary;
-  const debtToIncomeRatio = (totalDebt / monthlyIncome * 100).toFixed(1);
+  const debtToIncomeRatio = ((totalDebt / monthlyIncome) * 100).toFixed(1);
 
   return `**Loan & Debt Management Strategy**
 
@@ -108,10 +142,11 @@ function generateLoanResponse(question, context) {
    - Best for: Quick wins and motivation
 
 **My Recommendation for you:**
-${debtToIncomeRatio > 30 ? 
-  `⚠️ Your debt ratio is high. Focus on debt reduction:\n- Use Avalanche method to minimize interest\n- Avoid new loans\n- Consider debt consolidation if possible` 
-  : 
-  `✓ Your debt ratio is healthy. You can:\n- Continue current payments\n- Consider prepayment if interest rate > 10%\n- Balance between debt repayment and investments`}
+${
+  debtToIncomeRatio > 30
+    ? `⚠️ Your debt ratio is high. Focus on debt reduction:\n- Use Avalanche method to minimize interest\n- Avoid new loans\n- Consider debt consolidation if possible`
+    : `✓ Your debt ratio is healthy. You can:\n- Continue current payments\n- Consider prepayment if interest rate > 10%\n- Balance between debt repayment and investments`
+}
 
 **Loan Eligibility Factors:**
 - Age: ${context.age} years (Ideal: 25-55)
@@ -156,8 +191,9 @@ Would you like a personalized calculation?`;
 
 function generateInvestmentResponse(question, context) {
   const age = context.age;
-  const riskProfile = age < 35 ? "Aggressive" : age < 50 ? "Moderate" : "Conservative";
-  
+  const riskProfile =
+    age < 35 ? "Aggressive" : age < 50 ? "Moderate" : "Conservative";
+
   return `**Investment Strategy for You**
 
 **Your Risk Profile: ${riskProfile}**
@@ -165,27 +201,31 @@ function generateInvestmentResponse(question, context) {
 
 **Recommended Asset Allocation:**
 
-${age < 35 ? `
+${
+  age < 35
+    ? `
 **Aggressive Portfolio (Age < 35)**
 - Equity: 70-80% (Large cap 40%, Mid cap 20%, Small cap 10%)
 - Debt: 20-30% (Corporate bonds, Debt funds)
 - Gold: 5-10% (SGB, Gold ETF)
 
-Time is your biggest asset. Focus on growth!` 
-: age < 50 ? `
+Time is your biggest asset. Focus on growth!`
+    : age < 50
+      ? `
 **Moderate Portfolio (Age 35-50)**
 - Equity: 50-60% (Large cap 35%, Mid cap 15%)
 - Debt: 30-40% (PPF, Corporate bonds)
 - Gold: 10% (Diversification)
 
 Balance growth with stability.`
-: `
+      : `
 **Conservative Portfolio (Age 50+)**
 - Equity: 30-40% (Blue chip stocks, Index funds)
 - Debt: 50-60% (Bonds, FDs, PPF)
 - Gold: 10% (Hedge against inflation)
 
-Preserve capital while beating inflation.`}
+Preserve capital while beating inflation.`
+}
 
 **Investment Principles:**
 1. Start early, invest regularly (SIP)
@@ -200,13 +240,13 @@ Would you like specific fund recommendations?`;
 
 function generateInsuranceResponse(question, context) {
   const recommendedCover = context.salary * 12 * 10;
-  
+
   return `**Insurance Planning**
 
 **Essential Coverage for you:**
 
 1. **Term Life Insurance**
-   - Recommended cover: ₹${(recommendedCover).toLocaleString()} (10x annual income)
+   - Recommended cover: ₹${recommendedCover.toLocaleString()} (10x annual income)
    - Monthly premium: ~₹${Math.floor(context.salary * 0.015).toLocaleString()}
    - Pure protection, no investment component
 
@@ -239,7 +279,7 @@ function generateSavingsResponse(question, context) {
   const goal = context.savings.goalAmount || 0;
   const current = context.savings.currentSavings || 0;
   const remaining = goal - current;
-  
+
   return `**Savings Strategy**
 
 **Your Current Goal:**
@@ -267,12 +307,12 @@ function generateSavingsResponse(question, context) {
    - NPS: Market-linked, tax benefits
 
 **Smart Saving Formula:**
-- Emergency fund: ${context.disposableIncome > (context.totalExpenses * 6) ? '✓ Focus on goals' : '⚠️ Build this first'}
+- Emergency fund: ${context.disposableIncome > context.totalExpenses * 6 ? "✓ Focus on goals" : "⚠️ Build this first"}
 - Automate savings (SIP/RD)
 - Review quarterly
 
 **To reach your goal:**
-Required monthly saving: ₹${remaining > 0 ? Math.ceil(remaining / 12).toLocaleString() : '0'} (12 months)
+Required monthly saving: ₹${remaining > 0 ? Math.ceil(remaining / 12).toLocaleString() : "0"} (12 months)
 
 Want a customized savings plan?`;
 }
@@ -280,7 +320,7 @@ Want a customized savings plan?`;
 function generateRetirementResponse(question, context) {
   const yearsToRetirement = Math.max(0, 60 - context.age);
   const currentSavings = context.savings.currentSavings || 0;
-  
+
   return `**Retirement Planning**
 
 **Your Retirement Timeline:**
@@ -323,8 +363,11 @@ Want a detailed retirement plan?`;
 }
 
 function generateBudgetResponse(question, context) {
-  const savingsRate = ((context.disposableIncome / context.salary) * 100).toFixed(1);
-  
+  const savingsRate = (
+    (context.disposableIncome / context.salary) *
+    100
+  ).toFixed(1);
+
   return `**Budget Analysis**
 
 **Your Monthly Breakdown:**
@@ -332,10 +375,10 @@ function generateBudgetResponse(question, context) {
 **Income:** ₹${context.salary.toLocaleString()}
 
 **Expenses:** ₹${context.totalExpenses.toLocaleString()}
-- Personal: ₹${context.expenses.personal?.toLocaleString() || '0'}
-- Medical: ₹${context.expenses.medical?.toLocaleString() || '0'}
-- Housing: ₹${context.expenses.housing?.toLocaleString() || '0'}
-- Loan/Debt: ₹${context.expenses.loanDebt?.toLocaleString() || '0'}
+- Personal: ₹${context.expenses.personal?.toLocaleString() || "0"}
+- Medical: ₹${context.expenses.medical?.toLocaleString() || "0"}
+- Housing: ₹${context.expenses.housing?.toLocaleString() || "0"}
+- Loan/Debt: ₹${context.expenses.loanDebt?.toLocaleString() || "0"}
 
 **Savings:** ₹${context.disposableIncome.toLocaleString()}
 **Savings Rate:** ${savingsRate}%
@@ -346,9 +389,13 @@ function generateBudgetResponse(question, context) {
 - Savings (20%): ₹${Math.floor(context.salary * 0.2).toLocaleString()}
 
 **Your Performance:**
-${savingsRate >= 20 ? '✓ Excellent! You\'re meeting savings goals' :
-  savingsRate >= 10 ? '⚠️ Good, but try to increase to 20%' :
-  '⚠️ Focus on increasing savings rate'}
+${
+  savingsRate >= 20
+    ? "✓ Excellent! You're meeting savings goals"
+    : savingsRate >= 10
+      ? "⚠️ Good, but try to increase to 20%"
+      : "⚠️ Focus on increasing savings rate"
+}
 
 **Budget Optimization Tips:**
 1. Track ALL expenses (use apps)
@@ -358,9 +405,9 @@ ${savingsRate >= 20 ? '✓ Excellent! You\'re meeting savings goals' :
 5. Build emergency fund first
 
 **Areas to optimize:**
-${context.expenses.personal > context.salary * 0.2 ? '- Reduce personal expenses\n' : ''}
-${context.expenses.housing > context.salary * 0.3 ? '- Housing costs are high\n' : ''}
-${context.expenses.loanDebt > context.salary * 0.3 ? '- Focus on debt reduction\n' : ''}
+${context.expenses.personal > context.salary * 0.2 ? "- Reduce personal expenses\n" : ""}
+${context.expenses.housing > context.salary * 0.3 ? "- Housing costs are high\n" : ""}
+${context.expenses.loanDebt > context.salary * 0.3 ? "- Focus on debt reduction\n" : ""}
 
 Want help creating a detailed budget plan?`;
 }
@@ -395,64 +442,63 @@ export function getQuizForTopic(topic) {
   const quizzes = {
     sip: [
       {
-        question: "What is the primary benefit of investing through a Systematic Investment Plan (SIP)?",
+        question:
+          "What is the primary benefit of investing through a Systematic Investment Plan (SIP)?",
         options: [
           "Guaranteed returns on investment",
           "Rupee cost averaging and disciplined investing",
           "No market risk involved",
-          "Instant withdrawal without penalties"
+          "Instant withdrawal without penalties",
         ],
         correctAnswer: 1,
-        explanation: "SIP helps with rupee cost averaging, which means you buy more units when prices are low and fewer when prices are high. This disciplined approach reduces the impact of market volatility."
+        explanation:
+          "SIP helps with rupee cost averaging, which means you buy more units when prices are low and fewer when prices are high. This disciplined approach reduces the impact of market volatility.",
       },
       {
-        question: "What is the recommended minimum investment period for a SIP in equity mutual funds?",
+        question:
+          "What is the recommended minimum investment period for a SIP in equity mutual funds?",
         options: [
           "6 months to 1 year",
           "1-2 years",
           "3-5 years or more",
-          "Less than 6 months"
+          "Less than 6 months",
         ],
         correctAnswer: 2,
-        explanation: "For equity mutual funds, a minimum investment horizon of 3-5 years is recommended to ride out market volatility and benefit from compounding."
-      }
+        explanation:
+          "For equity mutual funds, a minimum investment horizon of 3-5 years is recommended to ride out market volatility and benefit from compounding.",
+      },
     ],
     loan: [
       {
-        question: "Which debt repayment strategy focuses on paying off loans with the highest interest rates first?",
+        question:
+          "Which debt repayment strategy focuses on paying off loans with the highest interest rates first?",
         options: [
           "Snowball method",
           "Avalanche method",
           "Consolidation method",
-          "Minimum payment method"
+          "Minimum payment method",
         ],
         correctAnswer: 1,
-        explanation: "The Avalanche method prioritizes paying off debts with the highest interest rates first, which saves the most money on interest over time."
+        explanation:
+          "The Avalanche method prioritizes paying off debts with the highest interest rates first, which saves the most money on interest over time.",
       },
       {
         question: "What is a healthy debt-to-income ratio to maintain?",
-        options: [
-          "More than 50%",
-          "Between 40-50%",
-          "Below 36%",
-          "Above 60%"
-        ],
+        options: ["More than 50%", "Between 40-50%", "Below 36%", "Above 60%"],
         correctAnswer: 2,
-        explanation: "A debt-to-income ratio below 36% is considered healthy, meaning your total monthly debt payments should not exceed 36% of your gross monthly income."
-      }
+        explanation:
+          "A debt-to-income ratio below 36% is considered healthy, meaning your total monthly debt payments should not exceed 36% of your gross monthly income.",
+      },
     ],
     tax: [
       {
-        question: "What is the maximum deduction allowed under Section 80C of the Income Tax Act?",
-        options: [
-          "₹1,00,000",
-          "₹1,50,000",
-          "₹2,00,000",
-          "₹50,000"
-        ],
+        question:
+          "What is the maximum deduction allowed under Section 80C of the Income Tax Act?",
+        options: ["₹1,00,000", "₹1,50,000", "₹2,00,000", "₹50,000"],
         correctAnswer: 1,
-        explanation: "Section 80C allows a maximum deduction of ₹1,50,000 per financial year for investments in specified instruments like PPF, ELSS, NSC, etc."
-      }
+        explanation:
+          "Section 80C allows a maximum deduction of ₹1,50,000 per financial year for investments in specified instruments like PPF, ELSS, NSC, etc.",
+      },
     ],
     investment: [
       {
@@ -461,11 +507,12 @@ export function getQuizForTopic(topic) {
           "Investing all money in one stock",
           "Spreading investments across different asset classes",
           "Only investing in fixed deposits",
-          "Investing only in real estate"
+          "Investing only in real estate",
         ],
         correctAnswer: 1,
-        explanation: "Diversification means spreading investments across different asset classes (stocks, bonds, gold, real estate) to reduce risk and optimize returns."
-      }
+        explanation:
+          "Diversification means spreading investments across different asset classes (stocks, bonds, gold, real estate) to reduce risk and optimize returns.",
+      },
     ],
     insurance: [
       {
@@ -474,11 +521,12 @@ export function getQuizForTopic(topic) {
           "Equal to annual income",
           "2-3 times annual income",
           "10-15 times annual income",
-          "Equal to savings"
+          "Equal to savings",
         ],
         correctAnswer: 2,
-        explanation: "Financial experts recommend life insurance coverage of 10-15 times your annual income to ensure your family's financial security."
-      }
+        explanation:
+          "Financial experts recommend life insurance coverage of 10-15 times your annual income to ensure your family's financial security.",
+      },
     ],
     savings: [
       {
@@ -487,24 +535,22 @@ export function getQuizForTopic(topic) {
           "1 month's expenses",
           "2-3 months' expenses",
           "6-12 months' expenses",
-          "1 year's salary"
+          "1 year's salary",
         ],
         correctAnswer: 2,
-        explanation: "An emergency fund should cover 6-12 months of living expenses to handle unexpected situations like job loss or medical emergencies."
-      }
+        explanation:
+          "An emergency fund should cover 6-12 months of living expenses to handle unexpected situations like job loss or medical emergencies.",
+      },
     ],
     retirement: [
       {
-        question: "At what age can you start withdrawing from NPS (National Pension System)?",
-        options: [
-          "50 years",
-          "55 years",
-          "60 years",
-          "65 years"
-        ],
+        question:
+          "At what age can you start withdrawing from NPS (National Pension System)?",
+        options: ["50 years", "55 years", "60 years", "65 years"],
         correctAnswer: 2,
-        explanation: "You can start withdrawing from NPS at age 60. At least 40% of the corpus must be used to purchase an annuity."
-      }
+        explanation:
+          "You can start withdrawing from NPS at age 60. At least 40% of the corpus must be used to purchase an annuity.",
+      },
     ],
     budget: [
       {
@@ -513,12 +559,13 @@ export function getQuizForTopic(topic) {
           "50% savings, 30% needs, 20% wants",
           "50% needs, 30% wants, 20% savings",
           "50% wants, 30% savings, 20% needs",
-          "50% investments, 30% expenses, 20% emergency fund"
+          "50% investments, 30% expenses, 20% emergency fund",
         ],
         correctAnswer: 1,
-        explanation: "The 50/30/20 rule suggests allocating 50% of income to needs, 30% to wants, and 20% to savings and debt repayment."
-      }
-    ]
+        explanation:
+          "The 50/30/20 rule suggests allocating 50% of income to needs, 30% to wants, and 20% to savings and debt repayment.",
+      },
+    ],
   };
 
   const topicQuizzes = quizzes[topic] || quizzes.investment;
