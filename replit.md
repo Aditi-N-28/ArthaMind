@@ -209,6 +209,19 @@ The workflow "Start application" is configured to run this automatically.
 
 ## Design System
 
+### Brand Identity
+- **Custom Logo**: Geometric SVG icon representing financial intelligence and growth
+  - **Design Elements**:
+    - Shield base: Security and structural integrity
+    - Grid lines: Data structure and organization
+    - Ascending data line: Financial growth trajectory
+    - Data points: Key insights and milestones
+  - **Implementation**:
+    - Dashboard navbar: h-10 w-10 (40x40px)
+    - Login/Signup pages: h-16 w-16 (64x64px) for prominent visual anchor
+    - Color: Uses `text-primary` class for theme consistency
+    - Fully scalable SVG with 100x100 viewBox
+
 ### Colors
 - **Primary**: Emerald green (financial growth theme)
 - **Accent**: Complementary accent colors
@@ -284,3 +297,8 @@ The application includes comprehensive E2E test coverage:
 - ✅ Implemented graceful fallback from Gemini to mock responses
 - ✅ Verified E2E test coverage with AI chatbot integration
 - ✅ Console logs confirm: "✓ Gemini AI initialized successfully with gemini-1.5-pro model"
+- ✅ Created custom geometric SVG logo representing financial intelligence and growth
+- ✅ Replaced generic "A" logo with custom SVG in Dashboard navbar (h-10 w-10)
+- ✅ Replaced generic "A" logo with custom SVG in Login page (h-16 w-16)
+- ✅ Replaced generic "A" logo with custom SVG in Signup page (h-16 w-16)
+- ✅ Verified logo rendering on all pages via E2E testing
