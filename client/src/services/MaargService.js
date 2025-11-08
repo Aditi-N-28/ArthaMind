@@ -8,14 +8,14 @@ if (hasGeminiKey) {
   try {
     const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
     // Using gemini-pro (stable model available in v1beta)
-    model = genAI.getGenerativeModel({ 
-      model: "gemini-pro",
+    model = genAI.getGenerativeModel({
+      model: "gemini-2.5-flash",
       generationConfig: {
         temperature: 0.7,
         topP: 0.95,
         topK: 40,
         maxOutputTokens: 1024,
-      }
+      },
     });
     console.log("✓ Gemini AI initialized successfully with gemini-pro model");
   } catch (error) {
