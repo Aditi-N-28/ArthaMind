@@ -1,0 +1,109 @@
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { TrendingUp, ExternalLink, Newspaper } from "lucide-react";
+
+const mockNews = [
+  {
+    id: "1",
+    title: "Stock Market Hits New High Amid Economic Recovery",
+    description: "Major indices reach record levels as investor confidence grows with improving economic indicators.",
+    source: "Financial Times",
+    publishedAt: new Date().toISOString(),
+    url: "#",
+  },
+  {
+    id: "2",
+    title: "RBI Keeps Interest Rates Unchanged",
+    description: "Reserve Bank maintains status quo on policy rates, focusing on inflation management and growth support.",
+    source: "Economic Times",
+    publishedAt: new Date(Date.now() - 86400000).toISOString(),
+    url: "#",
+  },
+  {
+    id: "3",
+    title: "Gold Prices Surge on Global Uncertainty",
+    description: "Precious metals see increased demand as investors seek safe-haven assets amid market volatility.",
+    source: "Bloomberg",
+    publishedAt: new Date(Date.now() - 172800000).toISOString(),
+    url: "#",
+  },
+  {
+    id: "4",
+    title: "New Tax Benefits for Savings Accounts Announced",
+    description: "Government introduces additional deductions for long-term savings in approved investment schemes.",
+    source: "Mint",
+    publishedAt: new Date(Date.now() - 259200000).toISOString(),
+    url: "#",
+  },
+];
+
+export default function NewsSection() {
+  const [news, setNews] = useState([]);
+
+  useEffect(() => {
+    setNews(mockNews);
+  }, []);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    
+    if (diffHours < 24) {
+      return `${diffHours}h ago`;
+    }
+    const diffDays = Math.floor(diffHours / 24);
+    return `${diffDays}d ago`;
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Newspaper className="h-5 w-5 text-primary" />
+            <CardTitle className="text-lg">Financial News</CardTitle>
+          </div>
+          <Badge variant="outline" className="gap-1">
+            <TrendingUp className="h-3 w-3" />
+            Live
+          </Badge>
+        </div>
+        <p className="text-sm text-muted-foreground">Stay updated with latest market insights</p>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {news.map((article) => (
+            <div 
+              key={article.id} 
+              className="p-4 rounded-lg border border-border hover-elevate transition-all cursor-pointer"
+              data-testid={`news-article-${article.id}`}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="secondary" className="text-xs">
+                      {article.source}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">
+                      {formatDate(article.publishedAt)}
+                    </span>
+                  </div>
+                  <h4 className="font-semibold text-sm leading-tight">
+                    {article.title}
+                  </h4>
+                  <p className="text-sm text-muted-foreground line-clamp-2">
+                    {article.description}
+                  </p>
+                </div>
+                <ExternalLink className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
