@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { auth, db } from "../firebase";
+import { auth, db } from "@/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
@@ -26,12 +26,12 @@ export default function FinancialCredentials() {
     e.preventDefault();
 
     const salary = parseFloat(formData.monthlySalary) || 0;
-    const totalExpenses = 
+    const totalExpenses =
       (parseFloat(formData.personal) || 0) +
       (parseFloat(formData.medical) || 0) +
       (parseFloat(formData.housing) || 0) +
       (parseFloat(formData.loanDebt) || 0);
-    
+
     const goalAmount = parseFloat(formData.goalAmount) || 0;
     const currentSavings = parseFloat(formData.currentSavings) || 0;
 
@@ -88,19 +88,24 @@ export default function FinancialCredentials() {
   const remaining = (parseFloat(formData.goalAmount) || 0) - (parseFloat(formData.currentSavings) || 0);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10 p-4">
-      <Card className="w-full max-w-3xl">
-        <CardHeader className="space-y-1">
+    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1f0036] via-[#2a004f] to-[#ff6b6b] p-4 overflow-hidden">
+      {/* 🔮 Glowing Background Circles */}
+      <div className="absolute w-72 h-72 bg-gradient-to-br from-pink-500 to-orange-400 rounded-full blur-3xl opacity-30 left-[-100px] bottom-[-100px]"></div>
+      <div className="absolute w-48 h-48 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full blur-2xl opacity-40 right-[-60px] top-[-60px]"></div>
+      <div className="absolute w-24 h-24 bg-purple-700 rounded-full blur-xl opacity-30 right-10 bottom-10"></div>
+
+      <Card className="w-full max-w-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl rounded-xl z-10">
+        <CardHeader className="space-y-1 text-center text-white">
           <CardTitle className="text-3xl font-bold">Financial Credentials</CardTitle>
-          <CardDescription className="text-base">
+          <CardDescription className="text-base text-white/70">
             Help us understand your financial situation to provide better insights
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="space-y-4">
-              <Label className="text-lg font-semibold flex items-center gap-2">
-                <DollarSign className="h-5 w-5 text-primary" />
+              <Label className="text-lg font-semibold flex items-center gap-2 text-white">
+                <DollarSign className="h-5 w-5 text-pink-400" />
                 Monthly Income
               </Label>
               <Input
@@ -113,15 +118,15 @@ export default function FinancialCredentials() {
                 min="0"
                 step="0.01"
                 data-testid="input-salary"
-                className="h-11"
+                className="h-11 bg-white/10 text-white placeholder-white/80 border border-white/30"
               />
             </div>
 
             <div className="space-y-4">
-              <Label className="text-lg font-semibold">Monthly Expenses</Label>
+              <Label className="text-lg font-semibold text-white">Monthly Expenses</Label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className="flex items-center gap-2 text-muted-foreground">
+                  <Label className="flex items-center gap-2 text-white/80">
                     <Wallet className="h-4 w-4" />
                     Personal
                   </Label>
@@ -134,11 +139,11 @@ export default function FinancialCredentials() {
                     min="0"
                     step="0.01"
                     data-testid="input-expense-personal"
-                    className="h-11"
+                    className="h-11 bg-white/10 text-white placeholder-white/80 border border-white/30"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="flex items-center gap-2 text-muted-foreground">
+                  <Label className="flex items-center gap-2 text-white/80">
                     <Heart className="h-4 w-4" />
                     Medical
                   </Label>
@@ -151,11 +156,11 @@ export default function FinancialCredentials() {
                     min="0"
                     step="0.01"
                     data-testid="input-expense-medical"
-                    className="h-11"
+                    className="h-11 bg-white/10 text-white placeholder-white/80 border border-white/30"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="flex items-center gap-2 text-muted-foreground">
+                  <Label className="flex items-center gap-2 text-white/80">
                     <Home className="h-4 w-4" />
                     Housing
                   </Label>
@@ -168,11 +173,11 @@ export default function FinancialCredentials() {
                     min="0"
                     step="0.01"
                     data-testid="input-expense-housing"
-                    className="h-11"
+                    className="h-11 bg-white/10 text-white placeholder-white/80 border border-white/30"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="flex items-center gap-2 text-muted-foreground">
+                  <Label className="flex items-center gap-2 text-white/80">
                     <CreditCard className="h-4 w-4" />
                     Loan/Debt Payments
                   </Label>
@@ -185,17 +190,17 @@ export default function FinancialCredentials() {
                     min="0"
                     step="0.01"
                     data-testid="input-expense-loan"
-                    className="h-11"
+                    className="h-11 bg-white/10 text-white placeholder-white/80 border border-white/30"
                   />
                 </div>
               </div>
             </div>
 
             <div className="space-y-4">
-              <Label className="text-lg font-semibold">Savings Goals</Label>
+              <Label className="text-lg font-semibold text-white">Savings Goals</Label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Goal Amount</Label>
+                  <Label className="text-white/80">Goal Amount</Label>
                   <Input
                     name="goalAmount"
                     type="number"
@@ -205,11 +210,11 @@ export default function FinancialCredentials() {
                     min="0"
                     step="0.01"
                     data-testid="input-goal-amount"
-                    className="h-11"
+                    className="h-11 bg-white/10 text-white placeholder-white/80 border border-white/30"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Current Monthly Savings</Label>
+                  <Label className="text-white/80">Current Monthly Savings</Label>
                   <Input
                     name="currentSavings"
                     type="number"
@@ -219,14 +224,14 @@ export default function FinancialCredentials() {
                     min="0"
                     step="0.01"
                     data-testid="input-current-savings"
-                    className="h-11"
+                    className="h-11 bg-white/10 text-white placeholder-white/80 border border-white/30"
                   />
                 </div>
               </div>
               {formData.goalAmount && formData.currentSavings && (
-                <div className="p-4 bg-secondary/10 rounded-lg">
-                  <p className="text-sm font-medium">
-                    Remaining to save: <span className="text-xl font-mono font-bold text-secondary">₹{remaining.toFixed(2)}</span>
+                <div className="p-4 bg-white/10 rounded-lg">
+                  <p className="text-sm font-medium text-white/90">
+                    Remaining to save: <span className="text-xl font-mono font-bold text-pink-400">₹{remaining.toFixed(2)}</span>
                   </p>
                 </div>
               )}
@@ -234,7 +239,7 @@ export default function FinancialCredentials() {
 
             <Button
               type="submit"
-              className="w-full h-11"
+              className="w-full h-11 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:from-pink-500 hover:to-orange-400 transition-all"
               disabled={loading}
               data-testid="button-submit-financial"
             >
