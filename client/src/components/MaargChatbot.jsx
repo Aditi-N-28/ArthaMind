@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { X, Send, Sparkles, Award, HelpCircle, Loader2 } from "lucide-react";
+import { X, Send, Sparkles, HelpCircle, Loader2 } from "lucide-react";
 import { getMaargResponse, detectTopicTag, getQuizForTopic } from "../services/MaargService";
 
 export default function MaargChatbot({ onClose, userData }) {
@@ -264,22 +264,18 @@ export default function MaargChatbot({ onClose, userData }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-gradient-to-br from-background/95 to-card/95 backdrop-blur-sm flex items-center justify-center p-4 z-50">
       <Card className="w-full max-w-3xl h-[600px] flex flex-col shadow-2xl">
         <CardHeader className="border-b border-border pb-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+              <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center">
                 <Sparkles className="h-5 w-5 text-white" />
               </div>
               <div>
                 <CardTitle className="text-xl flex items-center gap-2">
                   Chat with Maarg
                   <Badge variant="default" className="text-xs">AI</Badge>
-                  <Badge variant="secondary" className="text-xs gap-1">
-                    <Award className="h-3 w-3" />
-                    Premium
-                  </Badge>
                 </CardTitle>
                 <p className="text-sm text-muted-foreground">Your intelligent financial mentor</p>
               </div>
