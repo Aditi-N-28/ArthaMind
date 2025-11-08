@@ -1,15 +1,27 @@
-// Maarg AI Service - Mock implementation for Gemini API integration
-// This service will be replaced with actual Gemini API calls in production
+// Maarg AI Service - Google Gemini AI integration
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const hasGeminiKey = false; // Set to true when Gemini API key is added
+const hasGeminiKey = !!import.meta.env.VITE_GEMINI_API_KEY;
 let model = null;
 
-//Uncomment below when @google/generative-ai is installed and API key is set
- import { GoogleGenerativeAI } from "@google/generative-ai";
- if (import.meta.env.VITE_GEMINI_API_KEY) {
-   const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
-   model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
- }
+if (hasGeminiKey) {
+  try {
+    const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+    // Using gemini-pro (stable model available in v1beta)
+    model = genAI.getGenerativeModel({ 
+      model: "gemini-pro",
+      generationConfig: {
+        temperature: 0.7,
+        topP: 0.95,
+        topK: 40,
+        maxOutputTokens: 1024,
+      }
+    });
+    console.log("✓ Gemini AI initialized successfully with gemini-pro model");
+  } catch (error) {
+    console.error("Failed to initialize Gemini AI:", error);
+  }
+}
 
 const financialTopics = {
   sip: ["sip", "systematic investment", "mutual fund"],
