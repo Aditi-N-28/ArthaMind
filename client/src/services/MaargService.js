@@ -4,12 +4,12 @@
 const hasGeminiKey = false; // Set to true when Gemini API key is added
 let model = null;
 
-// Uncomment below when @google/generative-ai is installed and API key is set
-// import { GoogleGenerativeAI } from "@google/generative-ai";
-// if (import.meta.env.VITE_GEMINI_API_KEY) {
-//   const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
-//   model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-// }
+//Uncomment below when @google/generative-ai is installed and API key is set
+ import { GoogleGenerativeAI } from "@google/generative-ai";
+ if (import.meta.env.VITE_GEMINI_API_KEY) {
+   const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+   model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+ }
 
 const financialTopics = {
   sip: ["sip", "systematic investment", "mutual fund"],
