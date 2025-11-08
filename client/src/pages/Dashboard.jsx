@@ -81,10 +81,10 @@ export default function Dashboard() {
     <div className="min-h-screen bg-background">
       <div className="flex flex-col lg:flex-row h-screen">
         {/* Left Sidebar */}
-        <aside className="w-full lg:w-80 bg-card border-r border-card-border p-6 overflow-y-auto">
+        <aside className="w-full lg:w-80 p-6 overflow-y-auto rounded-xl shadow-lg bg-[rgba(255,255,255,0.05)] backdrop-blur-md border border-[rgba(255,255,255,0.2)]">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-[0_0_10px_rgba(255,255,255,0.3)]">
                 <span className="text-lg font-bold text-white">A</span>
               </div>
               <div>
