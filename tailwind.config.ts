@@ -1,28 +1,21 @@
 import type { Config } from "tailwindcss";
 
 export default {
-  // Ensure 'class' mode is active for dark mode toggle based on CSS variables
   darkMode: ["class"],
-  // Set content paths to include your source files
   content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
-      // Custom border radii from your design guidelines
       borderRadius: {
-        lg: "var(--radius)", // .5rem by default, but customizable via CSS variable
-        md: "calc(var(--radius) - 2px)", // using calc for derived values
-        sm: "calc(var(--radius) - 4px)",
+        lg: ".5625rem", /* 9px */
+        md: ".375rem", /* 6px */
+        sm: ".1875rem", /* 3px */
       },
-      // Mapping all CSS color variables to Tailwind utility classes
       colors: {
-        // Base colors
+        // Flat / base colors (regular buttons)
         background: "hsl(var(--background) / <alpha-value>)",
         foreground: "hsl(var(--foreground) / <alpha-value>)",
         border: "hsl(var(--border) / <alpha-value>)",
         input: "hsl(var(--input) / <alpha-value>)",
-        ring: "hsl(var(--ring) / <alpha-value>)",
-
-        // Semantic Colors
         card: {
           DEFAULT: "hsl(var(--card) / <alpha-value>)",
           foreground: "hsl(var(--card-foreground) / <alpha-value>)",
@@ -58,9 +51,16 @@ export default {
           foreground: "hsl(var(--destructive-foreground) / <alpha-value>)",
           border: "var(--destructive-border)",
         },
-
-        // Sidebar Colors
+        ring: "hsl(var(--ring) / <alpha-value>)",
+        chart: {
+          "1": "hsl(var(--chart-1) / <alpha-value>)",
+          "2": "hsl(var(--chart-2) / <alpha-value>)",
+          "3": "hsl(var(--chart-3) / <alpha-value>)",
+          "4": "hsl(var(--chart-4) / <alpha-value>)",
+          "5": "hsl(var(--chart-5) / <alpha-value>)",
+        },
         sidebar: {
+          ring: "hsl(var(--sidebar-ring) / <alpha-value>)",
           DEFAULT: "hsl(var(--sidebar) / <alpha-value>)",
           foreground: "hsl(var(--sidebar-foreground) / <alpha-value>)",
           border: "hsl(var(--sidebar-border) / <alpha-value>)",
@@ -73,16 +73,7 @@ export default {
         "sidebar-accent": {
           DEFAULT: "hsl(var(--sidebar-accent) / <alpha-value>)",
           foreground: "hsl(var(--sidebar-accent-foreground) / <alpha-value>)",
-          border: "var(--sidebar-accent-border)",
-        },
-
-        // Utility/Data Colors
-        chart: {
-          1: "hsl(var(--chart-1) / <alpha-value>)",
-          2: "hsl(var(--chart-2) / <alpha-value>)",
-          3: "hsl(var(--chart-3) / <alpha-value>)",
-          4: "hsl(var(--chart-4) / <alpha-value>)",
-          5: "hsl(var(--chart-5) / <alpha-value>)",
+          border: "var(--sidebar-accent-border)"
         },
         status: {
           online: "rgb(34 197 94)",
@@ -90,15 +81,12 @@ export default {
           busy: "rgb(239 68 68)",
           offline: "rgb(156 163 175)",
         },
-        // Elevation variables are used directly in the custom CSS utility layers
       },
-      // Font Families
       fontFamily: {
         sans: ["var(--font-sans)"],
         serif: ["var(--font-serif)"],
         mono: ["var(--font-mono)"],
       },
-      // Keyframes for animations (keeping standard shadcn ones)
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -115,6 +103,5 @@ export default {
       },
     },
   },
-  // Plugins should be imported if needed, but not included in this snippet
-  plugins: [],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 } satisfies Config;
