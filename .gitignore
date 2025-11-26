@@ -11,7 +11,8 @@ vite.config.ts.*
 /client/.env.local
 .vscode/
 .drizzle-cache/
+replit.md
 .replit
 replit.nix
 *.tsbuildinfo
-/coverage
+/coverage 
