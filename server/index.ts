@@ -1,6 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
+// The following line is removed as Vite is now run separately:
+// import { setupVite, serveStatic, log } from "./vite"; 
 
 const app = express();
 
@@ -10,7 +11,7 @@ declare module 'http' {
   }
 }
 app.use(express.json({
-  verify: (req, _res, buf) => {
+  verify: (req, _res, buf: Buffer | string) => {
     req.rawBody = buf;
   }
 }));
@@ -39,7 +40,8 @@ app.use((req, res, next) => {
         logLine = logLine.slice(0, 79) + "…";
       }
 
-      log(logLine);
+      // Replaced log() with console.log()
+      console.log(logLine); 
     }
   });
 
@@ -57,25 +59,26 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
+  // The conditional block that used to call setupVite() and serveStatic() 
+  // in development is REMOVED because the frontend runs separately.
+  
+  // NOTE: If your production logic requires serveStatic(app), you need to 
+  // reintroduce that for the 'production' environment check.
+  // Example for production (untested, depends on your original file structure):
+  if (app.get("env") !== "development") {
+    // Make sure 'serveStatic' is available, or manually serve static assets
+    // if using this block:
+    // serveStatic(app);
   }
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || '5000', 10);
+  // Set default port to 8000 to avoid conflicts and ENOTSUP error on 5000.
+  const port = parseInt(process.env.PORT || '8000', 10);
   server.listen({
     port,
-    host: "0.0.0.0",
-    reusePort: true,
+    host: "127.0.0.1", // Uses the safer loopback address
+    // 'reusePort' is REMOVED to avoid socket issues
   }, () => {
-    log(`serving on port ${port}`);
+    // Replaced log() with console.log()
+    console.log(`serving API on port ${port}`);
   });
 })();
