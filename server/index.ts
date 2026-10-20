@@ -1,7 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
-// The following line is removed as Vite is now run separately:
-// import { setupVite, serveStatic, log } from "./vite"; 
+import { serveStatic } from "./vite";
 
 const app = express();
 
@@ -59,26 +58,15 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // The conditional block that used to call setupVite() and serveStatic() 
-  // in development is REMOVED because the frontend runs separately.
-  
-  // NOTE: If your production logic requires serveStatic(app), you need to 
-  // reintroduce that for the 'production' environment check.
-  // Example for production (untested, depends on your original file structure):
   if (app.get("env") !== "development") {
-    // Make sure 'serveStatic' is available, or manually serve static assets
-    // if using this block:
-    // serveStatic(app);
+    serveStatic(app);
   }
 
-  // Set default port to 8000 to avoid conflicts and ENOTSUP error on 5000.
   const port = parseInt(process.env.PORT || '8000', 10);
   server.listen({
     port,
-    host: "127.0.0.1", // Uses the safer loopback address
-    // 'reusePort' is REMOVED to avoid socket issues
+    host: "0.0.0.0",
   }, () => {
-    // Replaced log() with console.log()
     console.log(`serving API on port ${port}`);
   });
 })();

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../firebase";
+import { auth, db, isFirebaseConfigured } from "../firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,11 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!auth || !db) {
+      toast.error("Firebase is not configured for this deployment.");
+      return;
+    }
 
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match");
@@ -137,6 +142,11 @@ export default function Signup() {
           <CardDescription className="text-base text-white/70">
             Start your journey to financial intelligence
           </CardDescription>
+          {!isFirebaseConfigured && (
+            <CardDescription className="text-amber-200">
+              Add the VITE_FIREBASE_* environment variables to enable sign up.
+            </CardDescription>
+          )}
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -216,7 +226,7 @@ export default function Signup() {
               type="submit"
               // 7. Applied shared button style
               className="w-full h-11 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:from-pink-500 hover:to-orange-400 transition-all"
-              disabled={loading}
+              disabled={loading || !isFirebaseConfigured}
               data-testid="button-signup"
             >
               {loading ? (

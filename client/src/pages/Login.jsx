@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth, isFirebaseConfigured } from "../firebase";
 import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +25,10 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!auth) {
+      toast.error("Firebase is not configured for this deployment.");
+      return;
+    }
     setLoading(true);
 
     try {
@@ -101,6 +105,11 @@ export default function Login() {
           <CardDescription className="text-base text-white/70">
             Your path to smarter money decisions, guided by Maarg
           </CardDescription>
+          {!isFirebaseConfigured && (
+            <CardDescription className="text-amber-200">
+              Add the VITE_FIREBASE_* environment variables to enable sign in.
+            </CardDescription>
+          )}
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -139,7 +148,7 @@ export default function Login() {
             <Button
               type="submit"
               className="w-full h-11 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:from-pink-500 hover:to-orange-400 transition-all"
-              disabled={loading}
+              disabled={loading || !isFirebaseConfigured}
               data-testid="button-login"
             >
               {loading ? (
