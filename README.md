@@ -20,10 +20,46 @@ npm start
 ```
 
 The server uses the hosting provider's `PORT` value and listens on `0.0.0.0`.
-For Render, Railway, or a similar Node host, create a web service from this
-repository with those commands. Do not configure the service as a static site.
+The repository includes a GitHub Actions workflow for deploying to a Linux VPS.
+It syncs the source over SSH, builds on the VPS, and restarts the systemd
+service. It does not use Render or deploy the app as a static site.
 
-Set these environment variables in the hosting provider dashboard:
+### VPS setup
+
+Install Node.js 20+, `rsync`, and the project dependencies on the VPS. Create a
+dedicated `arthamind` user, then clone or create the deployment directory:
+
+```bash
+sudo useradd --system --create-home --shell /usr/sbin/nologin arthamind
+sudo mkdir -p /opt/arthamind
+sudo chown -R arthamind:arthamind /opt/arthamind
+```
+
+Copy [`ops/arthamind.service`](./ops/arthamind.service) to
+`/etc/systemd/system/arthamind.service`, adjust paths if needed, and run:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable arthamind
+```
+
+Create `/opt/arthamind/.env.production` on the VPS with the variables below.
+Keep this file outside Git; the workflow intentionally excludes it.
+
+Add these GitHub Actions secrets (the `production` environment is recommended):
+
+```text
+SSH_HOST
+SSH_USER
+SSH_PRIVATE_KEY
+DEPLOY_PATH=/opt/arthamind
+```
+
+The SSH user must be able to write `DEPLOY_PATH` and run
+`sudo systemctl restart arthamind` without an interactive password. Restrict
+that sudo permission to the service restart command.
+
+Set these environment variables in `/opt/arthamind/.env.production` on the VPS:
 
 ```text
 VITE_FIREBASE_API_KEY

@@ -1,0 +1,16 @@
+[Unit]
+Description=ArthaMind Node service
+After=network.target
+
+[Service]
+Type=simple
+User=arthamind
+WorkingDirectory=/opt/arthamind
+EnvironmentFile=/opt/arthamind/.env.production
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node /opt/arthamind/dist/server/index.js
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
