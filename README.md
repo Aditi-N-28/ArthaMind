@@ -2,6 +2,8 @@ We solve financial confusion by giving users an AI mentor (Maarg) that provides 
 ArthaMind is a Fullstack web app designed to help user manage money intelligently with the help of its own AI chatbot,"Maarg".
 It also educates user about finance in a fun way.
 
+Feel free to check out our website here 👉: https://artha-mind.vercel.app
+
 ## Deployment
 
 This project deploys as one Node/Express service that serves the Vite client and
